@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Bay Packers Roster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #203731, #ffb612);
+            min-height: 100vh;
+            color: #203731;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #203731;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .week-selector {
+            margin: 20px 0;
+        }
+
+        .week-selector label {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 10px;
+            color: #203731;
+        }
+
+        .week-selector select {
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #203731;
+            border-radius: 8px;
+            background: white;
+            color: #203731;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .week-selector select:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(32, 55, 49, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #203731;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .team-section {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 20px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            background: #203731;
+            color: #ffb612;
+            padding: 15px 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .position-group {
+            margin: 20px;
+        }
+
+        .position-title {
+            background: #ffb612;
+            color: #203731;
+            padding: 10px 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .player-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .player-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(32, 55, 49, 0.15);
+            border-color: #203731;
+        }
+
+        .player-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            border: 3px solid #ffb612;
+            object-fit: cover;
+            background: #f5f5f5;
+        }
+
+        .player-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #203731;
+            margin: 8px 0;
+        }
+
+        .player-details {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .jersey-number {
+            background: #203731;
+            color: #ffb612;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px 0;
+            min-width: 35px;
+        }
+
+        .bye-week {
+            text-align: center;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .bye-week-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #203731;
+        }
+
+        .bye-week-title {
+            font-size: 2rem;
+            color: #203731;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .bye-week-message {
+            font-size: 1.2rem;
+            color: #666;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .bye-week-highlight {
+            background: #ffb612;
+            color: #203731;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            font-weight: bold;
+            max-width: 400px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #c62828;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .players-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 10px;
+            }
+            
+            .player-card {
+                padding: 10px;
+            }
+            
+            .player-image {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧀 Green Bay Packers Roster</h1>
+            <div class="week-selector">
+                <label for="weekSelect">Select Week:</label>
+                <select id="weekSelect">
+                    <option value="">Choose a week...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="loadingMessage" class="loading" style="display: none;">
+            Loading roster data...
+        </div>
+
+        <div id="errorMessage" class="error" style="display: none;"></div>
+
+        <div id="rosterContainer"></div>
+    </div>
+
+    <script>
+        class PackersRosterApp {
+            constructor() {
+                this.rosterData = [];
+                this.availableWeeks = [];
+                this.weekSelect = document.getElementById('weekSelect');
+                this.rosterContainer = document.getElementById('rosterContainer');
+                this.loadingMessage = document.getElementById('loadingMessage');
+                this.errorMessage = document.getElementById('errorMessage');
+                
+                this.init();
+            }
+
+            async init() {
+                await this.loadRosterData();
+                this.setupEventListeners();
+                this.populateWeekSelector();
+            }
+
+            async loadRosterData() {
+                try {
+                    this.showLoading(true);
+                    const response = await fetch('./Data/roster_info.csv');
+                    
+                    if (!response.ok) {
+                        throw new Error(`Failed to load data: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const csvText = await response.text();
+                    this.rosterData = this.parseCSV(csvText);
+                    this.extractAvailableWeeks();
+                    this.showLoading(false);
+                } catch (error) {
+                    this.showError(`Error loading roster data: ${error.message}`);
+                    this.showLoading(false);
+                }
+            }
+
+            parseCSV(csvText) {
+                const lines = csvText.trim().split('\n');
+                const headers = lines[0].split(',');
+                const data = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    const values = this.parseCSVLine(lines[i]);
+                    if (values.length === headers.length) {
+                        const row = {};
+                        headers.forEach((header, index) => {
+                            row[header.trim()] = values[index].trim();
+                        });
+                        data.push(row);
+                    }
+                }
+
+                return data;
+            }
+
+            parseCSVLine(line) {
+                const result = [];
+                let current = '';
+                let inQuotes = false;
+
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(current);
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                
+                result.push(current);
+                return result;
+            }
+
+            extractAvailableWeeks() {
+                const dataWeeks = [...new Set(this.rosterData.map(player => parseInt(player.week)))];
+                this.dataWeeks = dataWeeks.filter(week => !isNaN(week));
+                // Always show weeks 1-19, regardless of data availability
+                this.availableWeeks = Array.from({length: 19}, (_, i) => i + 1);
+            }
+
+            populateWeekSelector() {
+                this.weekSelect.innerHTML = '<option value="">Choose a week...</option>';
+                
+                this.availableWeeks.forEach(week => {
+                    const option = document.createElement('option');
+                    option.value = week;
+                    const isByeWeek = !this.dataWeeks.includes(week);
+                    option.textContent = isByeWeek ? `Week ${week} (Bye Week)` : `Week ${week}`;
+                    this.weekSelect.appendChild(option);
+                });
+            }
+
+            setupEventListeners() {
+                this.weekSelect.addEventListener('change', (e) => {
+                    const selectedWeek = e.target.value;
+                    if (selectedWeek) {
+                        this.displayRoster(parseInt(selectedWeek));
+                    } else {
+                        this.rosterContainer.innerHTML = '';
+                    }
+                });
+            }
+
+            displayRoster(week) {
+                const weekData = this.rosterData.filter(player => parseInt(player.week) === week);
+                
+                if (weekData.length === 0) {
+                    // Check if this is a bye week
+                    if (!this.dataWeeks.includes(week)) {
+                        this.rosterContainer.innerHTML = this.renderByeWeek(week);
+                    } else {
+                        this.rosterContainer.innerHTML = '<div class="no-data">No roster data available for this week.</div>';
+                    }
+                    return;
+                }
+
+                const organizedData = this.organizePlayersByTeamSide(weekData);
+                this.renderRoster(organizedData);
+            }
+
+            organizePlayersByTeamSide(players) {
+                const organized = {
+                    'Offense': {},
+                    'Defense': {},
+                    'Special Teams': {}
+                };
+
+                players.forEach(player => {
+                    const teamSide = player.team_side;
+                    const position = player.position;
+
+                    if (!organized[teamSide]) {
+                        organized[teamSide] = {};
+                    }
+
+                    if (!organized[teamSide][position]) {
+                        organized[teamSide][position] = [];
+                    }
+
+                    organized[teamSide][position].push(player);
+                });
+
+                // Sort players within each position by jersey number
+                Object.keys(organized).forEach(teamSide => {
+                    Object.keys(organized[teamSide]).forEach(position => {
+                        organized[teamSide][position].sort((a, b) => {
+                            return parseInt(a.jersey_number) - parseInt(b.jersey_number);
+                        });
+                    });
+                });
+
+                return organized;
+            }
+
+            renderRoster(organizedData) {
+                const teamSideOrder = ['Offense', 'Defense', 'Special Teams'];
+                let html = '';
+
+                teamSideOrder.forEach(teamSide => {
+                    if (organizedData[teamSide] && Object.keys(organizedData[teamSide]).length > 0) {
+                        html += this.renderTeamSection(teamSide, organizedData[teamSide]);
+                    }
+                });
+
+                this.rosterContainer.innerHTML = html;
+            }
+
+            renderTeamSection(teamSide, positions) {
+                const positionOrder = this.getPositionOrder(teamSide);
+                let html = `
+                    <div class="team-section">
+                        <div class="section-header">${teamSide}</div>
+                `;
+
+                // Sort positions according to the defined order
+                const sortedPositions = Object.keys(positions).sort((a, b) => {
+                    const indexA = positionOrder.indexOf(a);
+                    const indexB = positionOrder.indexOf(b);
+                    return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+                });
+
+                sortedPositions.forEach(position => {
+                    html += this.renderPositionGroup(position, positions[position]);
+                });
+
+                html += '</div>';
+                return html;
+            }
+
+            getPositionOrder(teamSide) {
+                const orders = {
+                    'Offense': ['QB', 'RB', 'FB', 'WR', 'TE', 'OL', 'C', 'G', 'T'],
+                    'Defense': ['DL', 'DE', 'DT', 'NT', 'LB', 'OLB', 'ILB', 'MLB', 'CB', 'S', 'FS', 'SS'],
+                    'Special Teams': ['K', 'P', 'LS']
+                };
+                return orders[teamSide] || [];
+            }
+
+            renderPositionGroup(position, players) {
+                let html = `
+                    <div class="position-group">
+                        <div class="position-title">${position}</div>
+                        <div class="players-grid">
+                `;
+
+                players.forEach(player => {
+                    html += this.renderPlayerCard(player);
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+
+                return html;
+            }
+
+            renderByeWeek(week) {
+                return `
+                    <div class="bye-week">
+                        <div class="bye-week-icon">🏈</div>
+                        <div class="bye-week-title">Week ${week} - Bye Week</div>
+                        <div class="bye-week-highlight">The Green Bay Packers are on a bye week</div>
+                        <div class="bye-week-message">
+                            The team had no scheduled game this week and players took a well-deserved break. 
+                            Bye weeks give players time to rest, recover from injuries, and prepare for the remaining games of the season.
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderPlayerCard(player) {
+                const imageUrl = player.headshot_url || 'https://via.placeholder.com/80x80?text=No+Image';
+                
+                return `
+                    <div class="player-card">
+                        <img src="${imageUrl}" 
+                             alt="${player.player_name}" 
+                             class="player-image"
+                             onerror="this.src='https://via.placeholder.com/80x80/203731/ffb612?text=No+Image'">
+                        <div class="player-name">${player.player_name}</div>
+                        <div class="jersey-number">#${player.jersey_number}</div>
+                        <div class="player-details">${player.position}</div>
+                    </div>
+                `;
+            }
+
+            showLoading(show) {
+                this.loadingMessage.style.display = show ? 'block' : 'none';
+            }
+
+            showError(message) {
+                this.errorMessage.textContent = message;
+                this.errorMessage.style.display = 'block';
+            }
+        }
+
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new PackersRosterApp();
+        });
+    </script>
+</body>
+</html>
